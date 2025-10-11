@@ -372,6 +372,21 @@ function App() {
                   <div className="comprobante-alert">
                     <p>⚠️ <strong>Guarda este comprobante</strong></p>
                     <p>Te contactaremos para verificarlo</p>
+                    <ul>
+                      <li>
+                        Envía tu comprobante 
+                        <a href="https://wa.me/59175268812" target="_blank" rel="noopener noreferrer">
+                          <br /><strong>a este numero</strong>
+                        </a>
+                      </li>
+                      <li>
+                        O también puedes enviarlo 
+                        <a href="https://wa.me/59169985423" target="_blank" rel="noopener noreferrer">
+                          <br /><strong>a este numero</strong>
+                        </a>
+                      </li>
+                    </ul>
+
                   </div>
                 </div>
               )}

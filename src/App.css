@@ -1154,3 +1154,20 @@
 .dark-mode .comprobante-alert p {
   color: #fef3c7;
 }
+
+ul {
+  list-style-type: none;
+}
+
+ul li {
+  position: relative;
+  margin-bottom: 8px;
+  padding-left: 20px;
+  font-family: '  Ryker', sans-serif;
+}
+
+a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  font-weight: 600;
+}
