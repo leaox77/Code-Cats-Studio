@@ -39,9 +39,9 @@ function App() {
   const productos = [
     { id: 'botones', nombre: 'Botones/Pines', precio: 5, imagen: Botones },
     { id: 'llavero', nombre: 'Llavero', precio: 10, imagen: Llavero },
-    { id: 'taza', nombre: 'Taza', precio: 20, imagen: Taza },
-    { id: 'mousepad', nombre: 'MousePad', precio: 30, imagen: MousePad },
-    { id: 'medias', nombre: 'Medias', precio: 30, imagen: Medias },
+    { id: 'taza', nombre: 'Taza', precio: 25, imagen: Taza },
+    { id: 'mousepad', nombre: 'MousePad', precio: 35, imagen: MousePad },
+    { id: 'medias', nombre: 'Medias', precio: 35, imagen: Medias },
     { id: 'polera', nombre: 'Polera', precio: 65, imagen: Polera }
   ];
 
