@@ -31,6 +31,7 @@ const Layout = ({ children }) => {
             </Link>
           </nav>
 
+          {/* El botón de modo oscuro ahora está dentro del header */}
           <button 
             className="theme-toggle"
             onClick={() => setDarkMode(!darkMode)}
@@ -48,12 +49,12 @@ const Layout = ({ children }) => {
       {/* Footer */}
       <footer className="layout-footer">
         <div className="footer-content">
-          <p>© 2024 Code Cats Studio - Desarrollado con 💻 y 🐱</p>
+          <p>© 2025 Code Cats Studio - Desarrollado con 💻 y 🐱</p>
           <div className="footer-links">
-            <a href="https://wa.me/591YOURNUMBER" target="_blank" rel="noopener noreferrer">
+            <a href="https://wa.me/59175268812" target="_blank" rel="noopener noreferrer">
               📱 WhatsApp
             </a>
-            <a href="https://instagram.com/yourprofile" target="_blank" rel="noopener noreferrer">
+            <a href="https://instagram.com/code_cats.studio" target="_blank" rel="noopener noreferrer">
               📸 Instagram
             </a>
           </div>

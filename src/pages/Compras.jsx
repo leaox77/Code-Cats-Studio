@@ -277,7 +277,7 @@ function Compras() {
   }));
 
   return (
-    <div className={`app-container ${darkMode ? 'dark-mode' : ''}`}>
+    <div className="compras-page">
       {/* Toast */}
       {mostrarToast && (
         <div className={`toast ${toastMensaje.includes('❌') ? 'toast-error' : toastMensaje.includes('🎉') ? 'toast-success' : 'toast-warning'}`}>
@@ -413,12 +413,6 @@ function Compras() {
       <header className="header">
         <h1>¿Qué comprarás el día de hoy?</h1>
         <p className="subtitle">Puedes comprar un paquete o productos unitarios</p>
-        <button 
-          className="theme-toggle"
-          onClick={() => setDarkMode(!darkMode)}
-        >
-          {darkMode ? '☀️ Modo Claro' : '🌙 Modo Oscuro'}
-        </button>
       </header>
 
       <div className="formulario">

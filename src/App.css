@@ -24,7 +24,6 @@
 .app-container {
   min-height: 100vh;
   background: var(--bg-light);
-  padding: 40px 20px;
   transition: all 0.3s ease;
 }
 
@@ -62,9 +61,7 @@
 }
 
 .theme-toggle {
-  position: absolute;
   top: 0;
-  right: 20px;
   background: var(--primary-color);
   color: white;
   border: none;
@@ -355,6 +352,7 @@
   background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
   border-radius: 16px;
   box-shadow: 0 8px 24px rgba(65, 66, 245, 0.1);
+  margin-bottom: 20px;
 }
 
 .dark-mode .total-section {

@@ -1,8 +1,17 @@
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .layout-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 1rem 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  top: 0;
+  z-index: 1000;
 }
 
 .dark-mode .layout-header {
@@ -36,6 +45,8 @@
   display: flex;
   gap: 30px;
   align-items: center;
+  flex: 1;
+  justify-content: center;
 }
 
 .nav-link {
@@ -72,6 +83,7 @@
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   transition: all 0.3s ease;
+  margin-left: auto;
 }
 
 .theme-toggle:hover {
@@ -80,14 +92,16 @@
 }
 
 .layout-main {
-  min-height: calc(100vh - 140px);
+  flex: 1;
   padding: 0;
+  width: 100%;
 }
 
 .layout-footer {
   background: #2d3748;
   color: white;
   padding: 2rem 0;
+  width: 100%;
   margin-top: auto;
 }
 
@@ -137,6 +151,8 @@
 
   .nav-menu {
     gap: 15px;
+    justify-content: center;
+    width: 100%;
   }
 
   .nav-link {
@@ -146,6 +162,12 @@
 
   .logo-section h1 {
     font-size: 1.5rem;
+  }
+
+  .theme-toggle {
+    margin-left: 0;
+    width: 100%;
+    max-width: 200px;
   }
 
   .footer-links {
