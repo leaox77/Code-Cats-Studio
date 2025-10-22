@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import ProductCard from '../components/ProductCard';
 import '../App.css';
+import '../components/Compras.css';
 
 import qrBancoSol from '../assets/qr.jpeg';
 
@@ -26,6 +27,7 @@ function Compras() {
   const [enviando, setEnviando] = useState(false);
   const [mostrarToast, setMostrarToast] = useState(false);
   const [toastMensaje, setToastMensaje] = useState('');
+  const [metodoPago, setMetodoPago] = useState('qr');
   const fileInputRef = useRef(null);
 
   const paquetes = [
@@ -85,6 +87,18 @@ function Compras() {
       [id]: cantidad
     }));
   };
+
+  const handleMetodoPagoChange = (nuevoMetodo) => {
+    setMetodoPago(nuevoMetodo);
+    // Limpiar comprobante al cambiar método
+    if (nuevoMetodo === 'efectivo') {
+        setComprobante(null);
+        setComprobantePreview('');
+        if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+        }
+    }
+    };
 
   const handleInputChange = (e) => {
     setForm({
@@ -288,127 +302,230 @@ function Compras() {
       {/* Modal de Pago */}
       {mostrarModalPago && (
         <div className="pago-modal">
-          <div className="pago-modal-content">
+            <div className="pago-modal-content">
             <button className="pago-close-btn" onClick={cerrarModalPago}>×</button>
             
             {/* Resumen del Pedido */}
             <div className="resumen-section">
-              <h3>📋 Resumen de tu Pedido</h3>
-              <div className="cliente-info">
+                <h3>📋 Resumen de tu Pedido</h3>
+                <div className="cliente-info">
                 <p><strong>Cliente:</strong> {form.nombre}</p>
                 <p><strong>CI:</strong> {form.ci}</p>
                 <p><strong>Teléfono:</strong> {form.telefono}</p>
                 {form.conocimiento && <p><strong>Nos conociste por:</strong> {form.conocimiento}</p>}
-              </div>
-              
-              <div className="productos-resumen">
+                </div>
+                
+                <div className="productos-resumen">
                 <h4>Productos seleccionados:</h4>
                 {productosSeleccionados.map((item, index) => (
-                  <div key={index} className="producto-resumen">
+                    <div key={index} className="producto-resumen">
                     <span>{item.nombre}</span>
                     <span>x{item.cantidad}</span>
                     <span>Bs. {item.subtotal.toLocaleString()}</span>
-                  </div>
+                    </div>
                 ))}
                 <div className="total-resumen">
-                  <strong>Total: Bs. {total.toLocaleString()}</strong>
+                    <strong>Total: Bs. {total.toLocaleString()}</strong>
                 </div>
-              </div>
+                </div>
             </div>
 
-            {/* QR de Pago */}
-            <div className="qr-section">
-              <h4>💳 Pagar con QR</h4>
-              <div className="qr-bank-info">
-                <p><strong>Monto a pagar:</strong> Bs. {total.toLocaleString()}</p>
-              </div>
-              
-              <div className="qr-image-container">
-                <img src={qrBancoSol} alt="QR de pago" className="qr-image" />
-              </div>
-              
-              <div className="qr-instructions">
-                <p><strong>Instrucciones:</strong></p>
-                <p>1. Abre tu app bancaria</p>
-                <p>2. Escanea el código QR</p>
-                <p>3. Ingresa el monto exacto</p>
-                <p>4. Confirma el pago</p>
-                <p>5. <strong>Guarda el comprobante</strong></p>
-              </div>
+            {/* Selector de Método de Pago */}
+            <div className="metodo-pago-section">
+                <h4>💳 Selecciona tu método de pago</h4>
+                <div className="metodo-pago-toggle">
+                <div 
+                    className={`toggle-option ${metodoPago === 'qr' ? 'active' : ''}`}
+                    onClick={() => handleMetodoPagoChange('qr')}
+                >
+                    <span className="toggle-icon">📱</span>
+                    <span className="toggle-text">Pago QR</span>
+                </div>
+                <div 
+                    className={`toggle-option ${metodoPago === 'efectivo' ? 'active' : ''}`}
+                    onClick={() => handleMetodoPagoChange('efectivo')}
+                >
+                    <span className="toggle-icon">💵</span>
+                    <span className="toggle-text">Efectivo</span>
+                </div>
+                <div className={`toggle-slider ${metodoPago}`}></div>
+                </div>
             </div>
 
-            {/* Comprobante */}
-            <div className="comprobante-section">
-              <h4>📎 Confirmar Comprobante</h4>
-              
-              {!comprobantePreview ? (
-                <div className="comprobante-upload">
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleComprobanteChange}
-                    accept="image/*"
-                    className="comprobante-input"
-                    id="comprobante-file"
-                  />
-                  <label htmlFor="comprobante-file" className="comprobante-label">
-                    📸 Subir captura del comprobante
-                  </label>
-                  <p className="comprobante-hint">Formato: JPG, PNG (máx. 2MB)</p>
-                  <p className="comprobante-tip">💡 <strong>Importante:</strong> Guarda el comprobante</p>
+            {/* Contenido dinámico según método de pago */}
+            <div className={`pago-contenido ${metodoPago}`}>
+                
+                {/* Sección QR */}
+                {metodoPago === 'qr' && (
+                <div className="qr-section pago-seccion active">
+                    <h4>💳 Pagar con QR</h4>
+                    <div className="qr-bank-info">
+                    <p><strong>Monto a pagar:</strong> Bs. {total.toLocaleString()}</p>
+                    </div>
+                    
+                    <div className="qr-image-container">
+                    <img src={qrBancoSol} alt="QR de pago" className="qr-image" />
+                    </div>
+                    
+                    <div className="qr-instructions">
+                    <p><strong>Instrucciones de pago:</strong></p>
+                    <div className="instruction-steps">
+                        <div className="step">
+                        <span className="step-number">1</span>
+                        <span>Abre tu app bancaria</span>
+                        </div>
+                        <div className="step">
+                        <span className="step-number">2</span>
+                        <span>Escanea el código QR</span>
+                        </div>
+                        <div className="step">
+                        <span className="step-number">3</span>
+                        <span>Ingresa el monto exacto</span>
+                        </div>
+                        <div className="step">
+                        <span className="step-number">4</span>
+                        <span>Confirma el pago</span>
+                        </div>
+                        <div className="step">
+                        <span className="step-number">5</span>
+                        <span><strong>Guarda el comprobante</strong></span>
+                        </div>
+                    </div>
+                    </div>
                 </div>
-              ) : (
-                <div className="comprobante-preview">
-                  <div className="comprobante-image-container">
-                    <img src={comprobantePreview} alt="Comprobante" className="comprobante-image" />
-                    <button className="comprobante-remove" onClick={eliminarComprobante}>
-                      🗑️
-                    </button>
-                  </div>
-                  <p className="comprobante-success">✅ Comprobante listo</p>
-                  <p className="comprobante-size">
-                    Archivo: {comprobante.name} ({(comprobante.size / 1024 / 1024).toFixed(2)} MB)
-                  </p>
-                  <div className="comprobante-alert">
-                    <p>⚠️ <strong>Guarda este comprobante</strong></p>
-                    <p>Te contactaremos para verificarlo</p>
-                    <ul>
-                      <li>
-                        Envía tu comprobante 
-                        <a href="https://wa.me/59175268812" target="_blank" rel="noopener noreferrer">
-                          <br /><strong>a este numero</strong>
-                        </a>
-                      </li>
-                      <li>
-                        O también puedes enviarlo 
-                        <a href="https://wa.me/59169985423" target="_blank" rel="noopener noreferrer">
-                          <br /><strong>a este numero</strong>
-                        </a>
-                      </li>
-                    </ul>
+                )}
 
-                  </div>
+                {/* Sección Efectivo */}
+                {metodoPago === 'efectivo' && (
+                <div className="efectivo-section pago-seccion active">
+                    <h4>💵 Pago en Efectivo</h4>
+                    <div className="efectivo-info">
+                    <p><strong>Monto a pagar:</strong> Bs. {total.toLocaleString()}</p>
+                    <div className="efectivo-alert">
+                        <div className="alert-icon">💡</div>
+                        <div className="alert-content">
+                        <p><strong>Para completar tu compra:</strong></p>
+                        <p>Envía un mensaje de WhatsApp comunicando tu pedido</p>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div className="whatsapp-instructions">
+                    <h5>📝 Instrucciones para enviar por WhatsApp:</h5>
+                    <div className="message-template">
+                        <div className="template-header">
+                        <span>Mensaje sugerido:</span>
+                        <button 
+                            className="copy-btn"
+                            onClick={() => {
+                            const mensaje = `¡Hola! Quiero realizar mi pedido:\n\n*Cliente:* ${form.nombre}\n*CI:* ${form.ci}\n*Teléfono:* ${form.telefono}\n*Total a pagar:* Bs. ${total}\n\n*Productos:*\n${productosSeleccionados.map(item => `• ${item.nombre} x${item.cantidad} - Bs. ${item.subtotal}`).join('\n')}\n\n*Método de pago:* Efectivo`;
+                            navigator.clipboard.writeText(mensaje);
+                            mostrarToastMensaje('📋 Mensaje copiado al portapapeles', 'success');
+                            }}
+                        >
+                            📋 Copiar
+                        </button>
+                        </div>
+                        <div className="template-content">
+                        <p>¡Hola! Quiero realizar mi pedido:</p>
+                        <p><strong>Cliente:</strong> {form.nombre}</p>
+                        <p><strong>CI:</strong> {form.ci}</p>
+                        <p><strong>Teléfono:</strong> {form.telefono}</p>
+                        <p><strong>Total a pagar:</strong> Bs. {total.toLocaleString()}</p>
+                        <p><strong>Productos:</strong></p>
+                        <ul>
+                            {productosSeleccionados.map((item, index) => (
+                            <li key={index}>{item.nombre} x{item.cantidad} - Bs. {item.subtotal.toLocaleString()}</li>
+                            ))}
+                        </ul>
+                        <p><strong>Método de pago:</strong> Efectivo</p>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div className="whatsapp-buttons">
+                    <a 
+                        href={`https://wa.me/59175268812?text=${encodeURIComponent(`¡Hola! Quiero realizar mi pedido:\n\n*Cliente:* ${form.nombre}\n*CI:* ${form.ci}\n*Teléfono:* ${form.telefono}\n*Total a pagar:* Bs. ${total}\n\n*Productos:*\n${productosSeleccionados.map(item => `• ${item.nombre} x${item.cantidad} - Bs. ${item.subtotal}`).join('\n')}\n\n*Método de pago:* Efectivo`)}`}
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="whatsapp-btn"
+                    >
+                        📱 Enviar a WhatsApp 1
+                    </a>
+                    <a 
+                        href={`https://wa.me/59169985423?text=${encodeURIComponent(`¡Hola! Quiero realizar mi pedido:\n\n*Cliente:* ${form.nombre}\n*CI:* ${form.ci}\n*Teléfono:* ${form.telefono}\n*Total a pagar:* Bs. ${total}\n\n*Productos:*\n${productosSeleccionados.map(item => `• ${item.nombre} x${item.cantidad} - Bs. ${item.subtotal}`).join('\n')}\n\n*Método de pago:* Efectivo`)}`}
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="whatsapp-btn secondary"
+                    >
+                        📱 Enviar a WhatsApp 2
+                    </a>
+                    </div>
                 </div>
-              )}
+                )}
             </div>
+
+            {/* Comprobante (solo para QR) */}
+            {metodoPago === 'qr' && (
+                <div className="comprobante-section">
+                <h4>📎 Confirmar Comprobante</h4>
+                
+                {!comprobantePreview ? (
+                    <div className="comprobante-upload">
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleComprobanteChange}
+                        accept="image/*"
+                        className="comprobante-input"
+                        id="comprobante-file"
+                    />
+                    <label htmlFor="comprobante-file" className="comprobante-label">
+                        📸 Subir captura del comprobante
+                    </label>
+                    <p className="comprobante-hint">Formato: JPG, PNG (máx. 2MB)</p>
+                    <p className="comprobante-tip">💡 <strong>Importante:</strong> Guarda el comprobante</p>
+                    </div>
+                ) : (
+                    <div className="comprobante-preview">
+                    <div className="comprobante-image-container">
+                        <img src={comprobantePreview} alt="Comprobante" className="comprobante-image" />
+                        <button className="comprobante-remove" onClick={eliminarComprobante}>
+                        🗑️
+                        </button>
+                    </div>
+                    <p className="comprobante-success">✅ Comprobante listo</p>
+                    <p className="comprobante-size">
+                        Archivo: {comprobante.name} ({(comprobante.size / 1024 / 1024).toFixed(2)} MB)
+                    </p>
+                    <div className="comprobante-alert">
+                        <p>⚠️ <strong>Guarda este comprobante</strong></p>
+                        <p>Te contactaremos para verificarlo</p>
+                    </div>
+                    </div>
+                )}
+                </div>
+            )}
 
             {/* Botón de enviar */}
             <div className="pago-actions">
-              <button 
+                <button 
                 className="enviar-pedido-btn"
                 onClick={handleEnviarPedido}
-                disabled={enviando || !comprobante}
-              >
-                {enviando ? '🔄 Enviando pedido...' : '✅ Confirmar Pedido'}
-              </button>
-              <p className="pago-note">
-                {enviando && '⏳ Procesando tu pedido...'}
-                {!enviando && 'Al confirmar, tu pedido será registrado en nuestro sistema.'}
-              </p>
+                disabled={enviando || (metodoPago === 'qr' && !comprobante)}
+                >
+                {enviando ? '🔄 Procesando...' : metodoPago === 'qr' ? '✅ Confirmar Pedido' : '📝 Pedido Listo'}
+                </button>
+                <p className="pago-note">
+                {metodoPago === 'qr' 
+                    ? 'Al confirmar, tu pedido será registrado en nuestro sistema.'
+                    : '¡Ya casi está! Solo envía el mensaje por WhatsApp para completar tu pedido.'
+                }
+                </p>
             </div>
-          </div>
+            </div>
         </div>
-      )}
+        )}
 
       <header className="header">
         <h1>¿Qué comprarás el día de hoy?</h1>
