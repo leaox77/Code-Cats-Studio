@@ -14,7 +14,15 @@ const Proyectos = () => {
     { nombre: '🦇 Juego de trivia Halloween', descripcion: 'Quiz interactivo sobre películas y leyendas de terror' },
     { nombre: '🎭 Catálogo de máscaras', descripcion: 'Galería de máscaras y disfraces con filtros por categoría' },
     { nombre: '💀 Portfolio terrorífico', descripcion: 'Portfolio personal con diseño dark y efectos de terror' },
-    { nombre: '🌙 Recetario de pociones', descripcion: 'Recetas de bebidas temáticas con efectos visuales mágicos' }
+    { nombre: '🌙 Recetario de pociones', descripcion: 'Recetas de bebidas temáticas con efectos visuales mágicos' },
+    { nombre: '📅 Calendario de eventos terroríficos', descripcion: 'Eventos de Halloween con filtros por tipo y fecha en tu región' },
+    { nombre: '🗺️ Mapa de leyendas urbanas', descripcion: 'Mapa interactivo donde usuarios marcan lugares con historias de terror' },
+    { nombre: '🏆 Desafío de decoración', descripcion: 'Concurso de decoración de casas con votaciones y galería de fotos' },
+    { nombre: '😱 Clasificador de miedo', descripcion: 'Quiz que evalúa qué tan valiente eres según tus respuestas' },
+    { nombre: '🎵 Playlists de terror', descripcion: 'Listas de música ambiental, soundtracks y efectos de sonido' },
+    { nombre: '✍️ Diseñador de fuentes terroríficas', descripcion: 'Convierte texto a estilos góticos, ensangrentados y más' },
+    { nombre: '🎨 Manualidades DIY Halloween', descripcion: 'Proyectos paso a paso para decoración y disfraces caseros' },
+    { nombre: '🎬 Críticas de cine de terror', descripcion: 'Reseñas clasificadas por subgéneros: slasher, psicológico, found footage' }
   ];
 
   const [proyectos, setProyectos] = useState([]);
@@ -279,7 +287,7 @@ const Proyectos = () => {
                 <input type="text" id="nombre_invitado" name="nombre_invitado" value={formulario.nombre_invitado} onChange={handleChange} placeholder="Juan Pérez" disabled={enviando} />
               </div>
               <div className="form-group">
-                <label htmlFor="email_invitado">Tu Email *</label>
+                <label htmlFor="email_invitado">Tu Email * (con el que te registraste al curso)</label>
                 <input type="email" id="email_invitado" name="email_invitado" value={formulario.email_invitado} onChange={handleChange} placeholder="tu@email.com" disabled={enviando} />
               </div>
             </div>
