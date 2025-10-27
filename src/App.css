@@ -19,6 +19,10 @@
   --card-dark: #2d3748;
   --input-light: #ffffff;
   --input-dark: #4a5568;
+  --option-light: #f9f9f9;
+  --option-dark: #4a5568;
+  --select-light: #ffffff;
+  --select-dark: #76787b;
 }
 
 .app-container {
@@ -88,7 +92,7 @@
   justify-content: center;
 }
 
-.formulario input {
+.formulario input, .formulario select, .formulario option {
   width: 320px;
   padding: 12px;
   border-radius: 8px;
@@ -99,18 +103,18 @@
   background: var(--input-light);
 }
 
-.dark-mode .formulario input {
+.dark-mode .formulario input, .dark-mode .formulario select, .dark-mode .formulario option {
   background: var(--input-dark);
   border-color: #4a5568;
-  color: var(--text-dark);
+  color: var(--select-dark);
 }
 
-.formulario input:focus {
+.formulario input:focus, .formulario select:focus, .formulario option:focus {
   outline: none;
   border-color: var(--primary-color);
 }
 
-.dark-mode .formulario input:focus {
+.dark-mode .formulario input:focus, .dark-mode .formulario select:focus, .dark-mode .formulario option:focus {
   border-color: var(--accent-color);
 }
 
@@ -812,7 +816,7 @@
 }
 /* Toast */
 .toast {
-  position: fixed;
+  position: relative;
   top: 20px;
   right: 20px;
   padding: 16px 24px;
@@ -822,6 +826,7 @@
   z-index: 1001;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   animation: slideInRight 0.3s ease;
+  height: 130px;
 }
 
 .toast-success {
@@ -1168,4 +1173,24 @@ a {
   color: var(--secondary-color);
   text-decoration: none;
   font-weight: 600;
+}
+
+.formulario option {
+  color: var(--option-dark);
+  opacity: 0.1;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* 🔹 Quita las flechas en Chrome, Edge y Safari */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* 🔹 Quita las flechas en Firefox y define la propiedad estándar para compatibilidad */
+input[type=number] {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+  appearance: textfield;
 }

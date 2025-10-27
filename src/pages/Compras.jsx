@@ -47,6 +47,7 @@ function Compras() {
     { id: 'polera', nombre: 'Polera', precio: 65, imagen: Polera }
   ];
 
+  const cantidadesRef = useRef({});
   const [cantidades, setCantidades] = useState({});
   const [total, setTotal] = useState(0);
 
@@ -82,11 +83,12 @@ function Compras() {
   };
 
   const handleCantidadChange = (id, cantidad) => {
-    setCantidades(prev => ({
-      ...prev,
-      [id]: cantidad
-    }));
-  };
+  cantidadesRef.current[id] = cantidad;
+  setCantidades(prev => ({
+    ...prev,
+    [id]: cantidad
+  }));
+};
 
   const handleMetodoPagoChange = (nuevoMetodo) => {
     setMetodoPago(nuevoMetodo);
@@ -112,7 +114,7 @@ function Compras() {
       mostrarToastMensaje('❌ Primero agrega productos al carrito', 'error');
       return;
     }
-    if (!form.nombre || !form.ci || !form.telefono) {
+    if (!form.nombre || !form.telefono) {
       mostrarToastMensaje('❌ Completa tus datos primero', 'error');
       return;
     }
@@ -155,7 +157,7 @@ function Compras() {
   };
 
   const handleEnviarPedido = async () => {
-    if (!comprobante) {
+    if (!comprobante && metodoPago === 'qr') {
       mostrarToastMensaje('❌ Primero sube el comprobante de pago', 'error');
       return;
     }
@@ -163,12 +165,15 @@ function Compras() {
     setEnviando(true);
 
     // Solo enviar información del comprobante, no la imagen completa
-    const infoComprobante = {
-      nombre: comprobante.name,
-      tamaño: `${(comprobante.size / 1024 / 1024).toFixed(2)} MB`,
-      tipo: comprobante.type,
-      subido: new Date().toLocaleString('es-BO')
-    };
+    let infoComprobante = null;
+    if (metodoPago === 'qr' && comprobante) {
+      infoComprobante = {
+        nombre: comprobante.name,
+        tamaño: `${(comprobante.size / 1024 / 1024).toFixed(2)} MB`,
+        tipo: comprobante.type,
+        subido: new Date().toLocaleString('es-BO')
+      };
+    }
 
     const pedido = {
       ...form,
@@ -183,7 +188,11 @@ function Compras() {
         subtotal: (cantidades[p.id] || 0) * p.precio
       })).filter(p => p.cantidad > 0),
       total: total,
-      comprobante: `ARCHIVO_SUBIDO: ${infoComprobante.nombre} (${infoComprobante.tamaño})`
+       comprobante: metodoPago === 'qr' 
+      ? infoComprobante 
+        ? `ARCHIVO_SUBIDO: ${infoComprobante.nombre} (${infoComprobante.tamaño})`
+        : 'COMPROBANTE_NO_SUBIDO'
+      : 'PAGO_EN_EFECTIVO'
     };
 
     console.log('Enviando pedido sin imagen...');
@@ -209,8 +218,11 @@ function Compras() {
           script.parentNode.removeChild(script);
         }
         
-        if (response && response.status === "success") {
+        if (response && response.status === "success" && metodoPago === 'qr') {
           mostrarToastMensaje('🎉 ¡Pedido enviado! Guarda el comprobante y nos comunicaremos contigo.', 'success');
+          limpiarFormulario();
+        } else if (response && response.status === "success" && metodoPago === 'efectivo') {
+          mostrarToastMensaje('🎉 ¡Pedido registrado! Nos comunicaremos contigo para más detalles.', 'success');
           limpiarFormulario();
         } else {
           const errorMsg = response?.message || 'Error desconocido';
@@ -269,16 +281,33 @@ function Compras() {
     });
   };
 
-  const limpiarFormulario = () => {
+const limpiarFormulario = () => {
+  console.log('🧹 Limpiando formulario completamente...');
+  
+  // Resetear cantidades creando un nuevo objeto vacío
+  setCantidades({});
+  
+  // Forzar un re-render adicional para asegurar
+  setTimeout(() => {
     setCantidades({});
-    setForm({ nombre: '', ci: '', telefono: '', conocimiento: '' });
-    setComprobante(null);
-    setComprobantePreview('');
-    setMostrarModalPago(false);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
+  }, 100);
+  
+  setForm({ nombre: '', ci: '', telefono: '', conocimiento: '' });
+  setComprobante(null);
+  setComprobantePreview('');
+  setMostrarModalPago(false);
+  setEnviando(false);
+  
+  if (fileInputRef.current) {
+    fileInputRef.current.value = '';
+  }
+  
+  console.log('✅ Formulario limpiado completamente');
+  setTimeout(() => {
+    //refrescamos la pagina
+    window.location.reload();
+  }, 5000);
+};
 
   // Obtener productos seleccionados para el resumen
   const productosSeleccionados = [
@@ -310,7 +339,6 @@ function Compras() {
                 <h3>📋 Resumen de tu Pedido</h3>
                 <div className="cliente-info">
                 <p><strong>Cliente:</strong> {form.nombre}</p>
-                <p><strong>CI:</strong> {form.ci}</p>
                 <p><strong>Teléfono:</strong> {form.telefono}</p>
                 {form.conocimiento && <p><strong>Nos conociste por:</strong> {form.conocimiento}</p>}
                 </div>
@@ -418,7 +446,7 @@ function Compras() {
                         <button 
                             className="copy-btn"
                             onClick={() => {
-                            const mensaje = `¡Hola! Quiero realizar mi pedido:\n\n*Cliente:* ${form.nombre}\n*CI:* ${form.ci}\n*Teléfono:* ${form.telefono}\n*Total a pagar:* Bs. ${total}\n\n*Productos:*\n${productosSeleccionados.map(item => `• ${item.nombre} x${item.cantidad} - Bs. ${item.subtotal}`).join('\n')}\n\n*Método de pago:* Efectivo`;
+                            const mensaje = `¡Hola! Quiero realizar mi pedido:\n\n*Cliente:* ${form.nombre}\n*Teléfono:* ${form.telefono}\n*Total a pagar:* Bs. ${total}\n\n*Productos:*\n${productosSeleccionados.map(item => `• ${item.nombre} x${item.cantidad} - Bs. ${item.subtotal}`).join('\n')}\n\n*Método de pago:* Efectivo`;
                             navigator.clipboard.writeText(mensaje);
                             mostrarToastMensaje('📋 Mensaje copiado al portapapeles', 'success');
                             }}
@@ -429,7 +457,6 @@ function Compras() {
                         <div className="template-content">
                         <p>¡Hola! Quiero realizar mi pedido:</p>
                         <p><strong>Cliente:</strong> {form.nombre}</p>
-                        <p><strong>CI:</strong> {form.ci}</p>
                         <p><strong>Teléfono:</strong> {form.telefono}</p>
                         <p><strong>Total a pagar:</strong> Bs. {total.toLocaleString()}</p>
                         <p><strong>Productos:</strong></p>
@@ -445,7 +472,7 @@ function Compras() {
 
                     <div className="whatsapp-buttons">
                     <a 
-                        href={`https://wa.me/59175268812?text=${encodeURIComponent(`¡Hola! Quiero realizar mi pedido:\n\n*Cliente:* ${form.nombre}\n*CI:* ${form.ci}\n*Teléfono:* ${form.telefono}\n*Total a pagar:* Bs. ${total}\n\n*Productos:*\n${productosSeleccionados.map(item => `• ${item.nombre} x${item.cantidad} - Bs. ${item.subtotal}`).join('\n')}\n\n*Método de pago:* Efectivo`)}`}
+                        href={`https://wa.me/59175268812?text=${encodeURIComponent(`¡Hola! Quiero realizar mi pedido:\n\n*Cliente:* ${form.nombre}\n*Teléfono:* ${form.telefono}\n*Total a pagar:* Bs. ${total}\n\n*Productos:*\n${productosSeleccionados.map(item => `• ${item.nombre} x${item.cantidad} - Bs. ${item.subtotal}`).join('\n')}\n\n*Método de pago:* Efectivo`)}`}
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="whatsapp-btn"
@@ -453,7 +480,7 @@ function Compras() {
                         📱 Enviar a WhatsApp 1
                     </a>
                     <a 
-                        href={`https://wa.me/59169985423?text=${encodeURIComponent(`¡Hola! Quiero realizar mi pedido:\n\n*Cliente:* ${form.nombre}\n*CI:* ${form.ci}\n*Teléfono:* ${form.telefono}\n*Total a pagar:* Bs. ${total}\n\n*Productos:*\n${productosSeleccionados.map(item => `• ${item.nombre} x${item.cantidad} - Bs. ${item.subtotal}`).join('\n')}\n\n*Método de pago:* Efectivo`)}`}
+                        href={`https://wa.me/59169985423?text=${encodeURIComponent(`¡Hola! Quiero realizar mi pedido:\n\n*Cliente:* ${form.nombre}\n*Teléfono:* ${form.telefono}\n*Total a pagar:* Bs. ${total}\n\n*Productos:*\n${productosSeleccionados.map(item => `• ${item.nombre} x${item.cantidad} - Bs. ${item.subtotal}`).join('\n')}\n\n*Método de pago:* Efectivo`)}`}
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="whatsapp-btn secondary"
@@ -532,40 +559,6 @@ function Compras() {
         <p className="subtitle">Puedes comprar un paquete o productos unitarios</p>
       </header>
 
-      <div className="formulario">
-        <input 
-          type="text" 
-          name="nombre" 
-          placeholder="Tu nombre completo" 
-          value={form.nombre} 
-          onChange={handleInputChange} 
-          required 
-        />
-        <input 
-          type="text" 
-          name="ci" 
-          placeholder="CI o DNI" 
-          value={form.ci} 
-          onChange={handleInputChange} 
-          required 
-        />
-        <input 
-          type="tel" 
-          name="telefono" 
-          placeholder="Número de teléfono" 
-          value={form.telefono} 
-          onChange={handleInputChange} 
-          required 
-        />
-        <input 
-          type="text" 
-          name="conocimiento" 
-          placeholder="¿Por dónde nos conociste?" 
-          value={form.conocimiento} 
-          onChange={handleInputChange} 
-        />
-      </div>
-
       <section className="section">
         <h2 className="section-title">Paquetes</h2>
         <div className="products-grid paquetes-grid">
@@ -598,6 +591,25 @@ function Compras() {
         </div>
       </section>
 
+      <div className="formulario">
+        <input 
+          type="text" 
+          name="nombre" 
+          placeholder="Tu nombre" 
+          value={form.nombre} 
+          onChange={handleInputChange} 
+          required 
+        />
+        <input 
+          type="tel" 
+          name="telefono" 
+          placeholder="Número de teléfono" 
+          value={form.telefono} 
+          onChange={handleInputChange} 
+          required 
+        />
+      </div>
+
       <div className="total-section">
         <h2 className="total-label">Total General:</h2>
         <p className="total-amount">Bs.{total.toLocaleString()}</p>
@@ -605,7 +617,7 @@ function Compras() {
         <button 
           className="pagar-button"
           onClick={abrirModalPago}
-          disabled={total === 0 || !form.nombre || !form.ci || !form.telefono}
+          disabled={total === 0 || !form.nombre || !form.telefono}
         >
           💳 Proceder al Pago
         </button>
