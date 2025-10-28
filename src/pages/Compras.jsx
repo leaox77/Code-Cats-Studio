@@ -5,17 +5,29 @@ import '../components/Compras.css';
 
 import qrBancoSol from '../assets/qr.jpeg';
 
-import ProjectMaster from '../assets/project-master.jpeg';
-import CodeHunter from '../assets/code-hunter.jpeg';
-import KittenStarter from '../assets/kitten-starter.jpeg';
-import CodeAndCoffee from '../assets/code-coffee.jpeg';
-import MeowStarter from '../assets/meow-starter.jpeg';
-import Botones from '../assets/botones.jpeg';
-import Llavero from '../assets/llavero.jpeg';
-import Taza from '../assets/taza.jpeg';
-import MousePad from '../assets/mousepad.jpeg';
-import Medias from '../assets/medias.jpeg';
-import Polera from '../assets/polera.jpeg';
+//import ProjectMaster from '../assets/project-master.jpeg';
+//import CodeHunter from '../assets/code-hunter.jpeg';
+//import KittenStarter from '../assets/kitten-starter.jpeg';
+//import CodeAndCoffee from '../assets/code-coffee.jpeg';
+//import MeowStarter from '../assets/meow-starter.jpeg';
+//import Botones from '../assets/botones.jpeg';
+//import Llavero from '../assets/llavero.jpeg';
+//import Taza from '../assets/taza.jpeg';
+//import MousePad from '../assets/mousepad.jpeg';
+//import Medias from '../assets/medias.jpeg';
+//import Polera from '../assets/polera.jpeg';
+
+import ProjectMaster from '../assets/descuento_10/project-master.jpeg';
+import CodeHunter from '../assets/descuento_10/code-hunter.jpeg';
+import KittenStarter from '../assets/descuento_10/kitten-starter.jpeg';
+import CodeAndCoffee from '../assets/descuento_10/code-coffee.jpeg';
+import MeowStarter from '../assets/descuento_10/meow-starter.jpeg';
+import Botones from '../assets/descuento_10/botones.jpeg';
+import Llavero from '../assets/descuento_10/llavero.jpeg';
+import Taza from '../assets/descuento_10/taza.jpeg';
+import MousePad from '../assets/descuento_10/mousepad.jpeg';
+import Medias from '../assets/descuento_10/medias.jpeg';
+import Polera from '../assets/descuento_10/polera.jpeg';
 
 function Compras() {
   const scriptURL = "https://script.google.com/macros/s/AKfycbxqZqMa7ujKL1_Ai7vDGcZbOaEQCxnIOKOi4B8yfP7edKkB6jSUeA_QvD-uA39eg_LVIg/exec";
@@ -31,20 +43,20 @@ function Compras() {
   const fileInputRef = useRef(null);
 
   const paquetes = [
-    { id: 'pm', nombre: 'Project Master', precio: 150, imagen: ProjectMaster },
-    { id: 'ch', nombre: 'Code Hunter', precio: 80, imagen: CodeHunter },
-    { id: 'ks', nombre: 'Kitten Starter', precio: 40, imagen: KittenStarter },
-    { id: 'cc', nombre: 'Code and Coffee', precio: 35, imagen: CodeAndCoffee },
-    { id: 'ms', nombre: 'Meow Starter', precio: 20, imagen: MeowStarter }
+    { id: 'pm', nombre: 'Project Master', precio: 135, imagen: ProjectMaster },
+    { id: 'ch', nombre: 'Code Hunter', precio: 72, imagen: CodeHunter },
+    { id: 'ks', nombre: 'Kitten Starter', precio: 36, imagen: KittenStarter },
+    { id: 'cc', nombre: 'Code and Coffee', precio: 31, imagen: CodeAndCoffee },
+    { id: 'ms', nombre: 'Meow Starter', precio: 18, imagen: MeowStarter }
   ];
 
   const productos = [
-    { id: 'botones', nombre: 'Botones/Pines', precio: 5, imagen: Botones },
-    { id: 'llavero', nombre: 'Llavero', precio: 10, imagen: Llavero },
-    { id: 'taza', nombre: 'Taza', precio: 25, imagen: Taza },
-    { id: 'mousepad', nombre: 'MousePad', precio: 35, imagen: MousePad },
-    { id: 'medias', nombre: 'Medias', precio: 35, imagen: Medias },
-    { id: 'polera', nombre: 'Polera', precio: 65, imagen: Polera }
+    { id: 'botones', nombre: 'Botones/Pines', precio: 4, imagen: Botones },
+    { id: 'llavero', nombre: 'Llavero', precio: 9, imagen: Llavero },
+    { id: 'taza', nombre: 'Taza', precio: 21, imagen: Taza },
+    { id: 'mousepad', nombre: 'MousePad', precio: 31, imagen: MousePad },
+    { id: 'medias', nombre: 'Medias', precio: 30, imagen: Medias },
+    { id: 'polera', nombre: 'Polera', precio: 60, imagen: Polera }
   ];
 
   const cantidadesRef = useRef({});
