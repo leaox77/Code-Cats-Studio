@@ -40,6 +40,136 @@
   color: #ccc;
 }
 
+/* Botón Volver */
+.btn-volver {
+  background-color: transparent;
+  color: var(--primary-color);
+  font-family: 'Ryker', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px 20px;
+  border: 2px solid var(--primary-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.dark-mode .btn-volver {
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
+.btn-volver:hover {
+  background-color: var(--primary-color);
+  color: white;
+  transform: translateX(-5px);
+}
+
+.dark-mode .btn-volver:hover {
+  background-color: var(--accent-color);
+  color: #000;
+}
+
+/* Contenedor de Cards de Cursos */
+.cursos-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Card de Curso */
+.curso-card {
+  background: var(--card-light);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+  border: 3px solid transparent;
+}
+
+.dark-mode .curso-card {
+  background: var(--card-dark);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.curso-card:hover {
+  transform: translateY(-10px);
+  border-color: var(--primary-color);
+  box-shadow: 0 12px 32px rgba(65, 66, 245, 0.2);
+}
+
+.dark-mode .curso-card:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 12px 32px rgba(195, 251, 52, 0.3);
+}
+
+.curso-icon {
+  font-size: 5rem;
+  margin-bottom: 10px;
+}
+
+.curso-titulo {
+  font-family: 'Ryker', sans-serif;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.dark-mode .curso-titulo {
+  color: var(--accent-color);
+}
+
+.curso-descripcion {
+  font-family: 'CamingoCode', monospace;
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
+}
+
+.dark-mode .curso-descripcion {
+  color: #cbd5e0;
+}
+
+.btn-ver-proyectos {
+  background-color: var(--primary-color);
+  color: white;
+  font-family: 'Ryker', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.dark-mode .btn-ver-proyectos {
+  background-color: var(--accent-color);
+  color: #000;
+}
+
+.btn-ver-proyectos:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(65, 66, 245, 0.3);
+}
+
+.dark-mode .btn-ver-proyectos:hover {
+  box-shadow: 0 4px 12px rgba(195, 251, 52, 0.3);
+}
+
 /* Sección de Registro */
 .registro-section {
   text-align: center;
@@ -106,26 +236,26 @@
 .ideas-sugeridas {
   margin-bottom: 30px;
   padding: 25px;
-  background: linear-gradient(135deg, rgba(255, 111, 0, 0.05), rgba(138, 43, 226, 0.05));
+  background: linear-gradient(135deg, rgba(0, 128, 0, 0.05), rgba(255, 0, 0, 0.05));
   border-radius: 12px;
-  border: 2px dashed rgba(255, 111, 0, 0.3);
+  border: 2px dashed rgba(0, 128, 0, 0.3);
 }
 
 .dark-mode .ideas-sugeridas {
-  background: linear-gradient(135deg, rgba(255, 111, 0, 0.1), rgba(138, 43, 226, 0.1));
-  border-color: rgba(255, 111, 0, 0.5);
+  background: linear-gradient(135deg, rgba(0, 128, 0, 0.1), rgba(255, 0, 0, 0.1));
+  border-color: rgba(0, 128, 0, 0.5);
 }
 
 .ideas-titulo {
   font-family: 'Ryker', sans-serif;
   font-size: 1.3rem;
-  color: #ff6f00;
+  color: #008000;
   margin-bottom: 15px;
   text-align: center;
 }
 
 .dark-mode .ideas-titulo {
-  color: #ffaa00;
+  color: #00ff00;
 }
 
 .ideas-grid {
@@ -155,13 +285,13 @@
 
 .idea-card:hover:not(:disabled) {
   transform: translateY(-5px);
-  border-color: #ff6f00;
-  box-shadow: 0 8px 20px rgba(255, 111, 0, 0.3);
+  border-color: #008000;
+  box-shadow: 0 8px 20px rgba(0, 128, 0, 0.3);
 }
 
 .dark-mode .idea-card:hover:not(:disabled) {
-  border-color: #ffaa00;
-  box-shadow: 0 8px 20px rgba(255, 170, 0, 0.4);
+  border-color: #00ff00;
+  box-shadow: 0 8px 20px rgba(0, 255, 0, 0.4);
 }
 
 .idea-card:disabled {
@@ -641,6 +771,28 @@
     font-size: 1rem;
   }
 
+  .cursos-cards-container {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding: 10px;
+  }
+
+  .curso-card {
+    padding: 30px;
+  }
+
+  .curso-icon {
+    font-size: 4rem;
+  }
+
+  .curso-titulo {
+    font-size: 1.5rem;
+  }
+
+  .curso-descripcion {
+    font-size: 0.9rem;
+  }
+
   .formulario-proyecto-card {
     padding: 25px;
   }
@@ -691,6 +843,22 @@
 @media (max-width: 480px) {
   .proyectos-container {
     padding: 20px 10px;
+  }
+
+  .cursos-cards-container {
+    padding: 5px;
+  }
+
+  .curso-card {
+    padding: 25px;
+  }
+
+  .curso-icon {
+    font-size: 3.5rem;
+  }
+
+  .curso-titulo {
+    font-size: 1.3rem;
   }
 
   .formulario-proyecto-card {
