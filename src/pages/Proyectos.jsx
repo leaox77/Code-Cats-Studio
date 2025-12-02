@@ -2,11 +2,14 @@
 import '../components/Proyectos.css';
 
 const Proyectos = () => {
-  // URL del Web App de Google Apps Script
-  const scriptURL = "https://script.google.com/macros/s/AKfycbx-ra6Vn3YbWWmMN3Dpa31PLO3wUNi1g2bfZswCU0SqNkgE643yNKVKbBaHoLgMTzqT/exec";
+  // URLs de las hojas de cálculo
+  const scriptURLHalloween = "https://script.google.com/macros/s/AKfycbx-ra6Vn3YbWWmMN3Dpa31PLO3wUNi1g2bfZswCU0SqNkgE643yNKVKbBaHoLgMTzqT/exec";
+  const scriptURLNavidad = "https://script.google.com/macros/s/AKfycbwgGcEYPszmjzD2OvdzNREPGuvQIktDgaZwHVYu78PYMpIMXye2Peq_Phc-Fibgj4ao/exec";
 
-  // 🎃 Ideas de proyectos sugeridas
-  const ideasProyectos = [
+  const [vistaActual, setVistaActual] = useState('principal'); // 'principal', 'halloween', 'navidad'
+
+  // 🎃 Ideas de proyectos sugeridas para Halloween
+  const ideasHalloween = [
     { nombre: '🎃 Página de Halloween', descripcion: 'Landing page temática con animaciones spooky y countdown' },
     { nombre: '👻 Blog de historias de terror', descripcion: 'Blog para compartir relatos de terror cortos con votaciones' },
     { nombre: '🧛 Invitación fiesta Halloween', descripcion: 'Página de invitación interactiva con confirmación de asistencia' },
@@ -25,7 +28,32 @@ const Proyectos = () => {
     { nombre: '🎬 Críticas de cine de terror', descripcion: 'Reseñas clasificadas por subgéneros: slasher, psicológico, found footage' }
   ];
 
-  const [proyectos, setProyectos] = useState([]);
+  // 🎄 Ideas de proyectos sugeridas para Navidad
+  const ideasNavidad = [
+    { nombre: '🎄 Página de Navidad', descripcion: 'Landing page temática con animaciones navideñas y cuenta regresiva' },
+    { nombre: '🎅 Lista de regalos interactiva', descripcion: 'Aplicación para gestionar regalos y presupuestos' },
+    { nombre: '❄️ Tarjeta navideña animada', descripcion: 'Crea tarjetas personalizadas con animaciones' },
+    { nombre: '🛷 Juego de trineo', descripcion: 'Juego simple donde ayudas a Santa a entregar regalos' },
+    { nombre: '🎁 Catálogo de regalos', descripcion: 'Galería de ideas de regalos con filtros por categoría' },
+    { nombre: '🌟 Portfolio navideño', descripcion: 'Portfolio personal con diseño festivo y efectos de nieve' },
+    { nombre: '🍪 Recetario de galletas', descripcion: 'Recetas de galletas temáticas con fotos y pasos' },
+    { nombre: '📅 Calendario de adviento', descripcion: 'Cuenta regresiva interactiva con sorpresas diarias' },
+    { nombre: '🎵 Playlist navideña', descripcion: 'Colección de villancicos y música festiva con reproductor' },
+    { nombre: '🕯️ Velas de adviento virtuales', descripcion: 'Simulador de velas con oraciones y reflexiones diarias' },
+    { nombre: '⛄ Creador de muñecos de nieve', descripcion: 'Diseña tu muñeco de nieve personalizado con accesorios' },
+    { nombre: '🎨 Decorador navideño 3D', descripcion: 'Visualiza cómo quedaría tu casa decorada para navidad' },
+    { nombre: '📧 Carta a Santa', descripcion: 'Formulario mágico para enviar cartas a Santa Claus' },
+    { nombre: '🎲 Intercambio de regalos', descripcion: 'Organizador de amigo secreto con sorteo automático' },
+    { nombre: '🏠 Tour virtual de casas navideñas', descripcion: 'Galería 360° de casas decoradas espectacularmente' },
+    { nombre: '🎬 Películas navideñas', descripcion: 'Catálogo de películas clásicas con trailers y reseñas' },
+    { nombre: '🌍 Tradiciones del mundo', descripcion: 'Mapa interactivo mostrando cómo se celebra la navidad globalmente' },
+    { nombre: '🎪 Eventos navideños locales', descripcion: 'Calendario de ferias, mercados y festivales cercanos' },
+    { nombre: '✨ Luces navideñas sincronizadas', descripcion: 'Simulador de luces con música y patrones programables' },
+    { nombre: '📖 Libro de recuerdos', descripcion: 'Álbum digital para compartir fotos y mensajes familiares' }
+  ];
+
+  const [proyectosHalloween, setProyectosHalloween] = useState([]);
+  const [proyectosNavidad, setProyectosNavidad] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [enviando, setEnviando] = useState(false);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -41,7 +69,7 @@ const Proyectos = () => {
   });
 
   // Carga de proyectos usando JSONP para evitar CORS
-  const cargarProyectos = useCallback(() => {
+  const cargarProyectos = useCallback((categoria, scriptURL) => {
     setCargando(true);
 
     const callbackName = 'cb_list_' + Date.now() + '_' + Math.random().toString(36).slice(2);
@@ -54,7 +82,11 @@ const Proyectos = () => {
       
       try {
         if (response?.status === 'success') {
-          setProyectos(response.proyectos || []);
+          if (categoria === 'halloween') {
+            setProyectosHalloween(response.proyectos || []);
+          } else if (categoria === 'navidad') {
+            setProyectosNavidad(response.proyectos || []);
+          }
         } else {
           console.warn('⚠️ Status no exitoso, cargando ejemplos');
           cargarProyectosEjemplo();
@@ -69,7 +101,7 @@ const Proyectos = () => {
       }
     };
 
-    const url = `${scriptURL}?action=list&callback=${callbackName}`;
+    const url = `${scriptURL}?action=list&categoria=${categoria}&callback=${callbackName}`;
     console.log('📤 Cargando proyectos desde:', url);
     
     script.src = url;
@@ -94,20 +126,23 @@ const Proyectos = () => {
     }, 10000);
 
     document.body.appendChild(script);
-  }, [scriptURL]);
+  }, []);
 
   const cargarProyectosEjemplo = () => {
-    setProyectos([
+    const ejemplos = [
       { id: 1, nombre_proyecto: "E-commerce React", descripcion: "Tienda online moderna", presentador: "Code Cats" },
       { id: 2, nombre_proyecto: "Dashboard Analytics", descripcion: "Panel con gráficos", presentador: "María López" },
       { id: 3, nombre_proyecto: "API REST JWT", descripcion: "Backend seguro", presentador: "Carlos M." }
-    ]);
+    ];
+    setProyectosHalloween(ejemplos);
+    setProyectosNavidad(ejemplos);
   };
 
   // Efecto para cargar proyectos una vez montado el componente
   useEffect(() => {
-    cargarProyectos();
-  }, [cargarProyectos]);
+    cargarProyectos('halloween', scriptURLHalloween);
+    cargarProyectos('navidad', scriptURLNavidad);
+  }, [cargarProyectos, scriptURLHalloween, scriptURLNavidad]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -148,12 +183,16 @@ const Proyectos = () => {
     if (!validarFormulario()) return;
     setEnviando(true);
 
+    const categoria = vistaActual; // 'halloween' o 'navidad'
+    const scriptURL = categoria === 'halloween' ? scriptURLHalloween : scriptURLNavidad;
+
     const datosProyecto = {
       nombre_proyecto: formulario.nombre_proyecto,
       descripcion: formulario.descripcion,
       nombre_invitado: formulario.nombre_invitado,
       email_invitado: formulario.email_invitado,
-      fecha: new Date().toLocaleString('es-BO')
+      fecha: new Date().toLocaleString('es-BO'),
+      categoria: categoria
     };
 
     const callbackName = 'callback_' + Date.now() + '_' + Math.random().toString(36).slice(2);
@@ -169,7 +208,7 @@ const Proyectos = () => {
           mostrarToastMensaje('🎉 Proyecto registrado!', 'success');
           limpiarFormulario();
           setMostrarFormulario(false);
-          cargarProyectos();
+          cargarProyectos(categoria, scriptURL);
         } else {
           console.error('❌ Status error:', response);
           mostrarToastMensaje('❌ Error al registrar: ' + (response?.message || 'Desconocido'), 'error');
@@ -226,102 +265,228 @@ const Proyectos = () => {
 
   return (
     <div className="proyectos-container">
-      <div className="proyectos-header">
-        <h1> Proyectos Presentados</h1>
-        <p className="proyectos-subtitle">Descubre los proyectos de nuestra comunidad</p>
-      </div>
-
-      <div className="registro-section">
-        <button className="btn-registrar-proyecto" onClick={() => setMostrarFormulario(!mostrarFormulario)}>
-          {mostrarFormulario ? ' Cancelar' : ' Registrar mi Proyecto'}
-        </button>
-      </div>
-
-      {mostrarFormulario && (
-        <div className="formulario-proyecto-card">
-          <h2 className="formulario-titulo">🎃 Registra tu Proyecto</h2>
-          
-          {/* Sección de ideas sugeridas */}
-          <div className="ideas-sugeridas">
-            <h3 className="ideas-titulo">💡 Ideas de Proyectos Halloween</h3>
-            <div className="ideas-grid">
-              {ideasProyectos.map((idea, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  className="idea-card"
-                  onClick={() => seleccionarIdea(idea)}
-                  disabled={enviando}
-                >
-                  <span className="idea-nombre">{idea.nombre}</span>
-                  <span className="idea-desc">{idea.descripcion}</span>
-                </button>
-              ))}
-            </div>
-            <p className="ideas-nota">👆 Haz clic en una idea para usarla, o crea la tuya abajo</p>
+      {vistaActual === 'principal' && (
+        <>
+          <div className="proyectos-header">
+            <h1>🐱 Proyectos Code Cats Studio</h1>
+            <p className="proyectos-subtitle">Selecciona un curso para ver los proyectos</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="formulario-proyecto">
-            <div className="form-row">
-              <div className="form-group full-width">
-                <label htmlFor="nombre_proyecto">Nombre del Proyecto *</label>
-                <input type="text" id="nombre_proyecto" name="nombre_proyecto" value={formulario.nombre_proyecto} onChange={handleChange} placeholder="Ej: Sistema de Gestión" disabled={enviando} />
-              </div>
+          <div className="cursos-cards-container">
+            <div className="curso-card" onClick={() => setVistaActual('halloween')}>
+              <div className="curso-icon">🎃</div>
+              <h3 className="curso-titulo">Halloween - HTML & CSS</h3>
+              <p className="curso-descripcion">Proyectos del curso de HTML y CSS con temática de Halloween (Octubre 2025)</p>
+              <button className="btn-ver-proyectos">Ver Proyectos →</button>
             </div>
 
-            <div className="form-row">
-              <div className="form-group full-width">
-                <label htmlFor="descripcion">Descripción *</label>
-                <textarea id="descripcion" name="descripcion" value={formulario.descripcion} onChange={handleChange} placeholder="Describe tu proyecto (máx. 200 caracteres)" maxLength="200" rows="3" disabled={enviando} />
-                <span className="char-count">{formulario.descripcion.length}/200</span>
-              </div>
+            <div className="curso-card" onClick={() => setVistaActual('navidad')}>
+              <div className="curso-icon">🎄</div>
+              <h3 className="curso-titulo">Navidad - Figma</h3>
+              <p className="curso-descripcion">Proyectos del curso de Figma con temática de Navidad (Diciembre 2025)</p>
+              <button className="btn-ver-proyectos">Ver Proyectos →</button>
             </div>
-
-            {/* Se removió el campo de GitHub según requerimiento */}
-
-            {/* Siempre mostramos campos de invitado */}
-            <div className="divider"><span>👤 Tus Datos</span></div>
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="nombre_invitado">Tu Nombre *</label>
-                <input type="text" id="nombre_invitado" name="nombre_invitado" value={formulario.nombre_invitado} onChange={handleChange} placeholder="Juan Pérez" disabled={enviando} />
-              </div>
-              <div className="form-group">
-                <label htmlFor="email_invitado">Tu Email * (con el que te registraste al curso)</label>
-                <input type="email" id="email_invitado" name="email_invitado" value={formulario.email_invitado} onChange={handleChange} placeholder="tu@email.com" disabled={enviando} />
-              </div>
-            </div>
-
-            <div className="form-actions">
-              <button type="submit" className="btn-submit-proyecto" disabled={enviando}>{enviando ? ' Enviando...' : ' Registrar Proyecto'}</button>
-            </div>
-          </form>
-        </div>
+          </div>
+        </>
       )}
 
-      <div className="proyectos-lista-section">
-        <h2 className="seccion-titulo"> Proyectos Registrados</h2>
-        {cargando ? (
-          <div className="loading"><div className="spinner"></div><p>Cargando proyectos...</p></div>
-        ) : proyectos.length === 0 ? (
-          <div className="empty-state"><p className="empty-icon"></p><p className="empty-message">Aún no hay proyectos</p><p className="empty-submessage">¡Sé el primero!</p></div>
-        ) : (
-          <div className="proyectos-grid">
-            {proyectos.map((proyecto) => (
-              <div key={proyecto.id} className="proyecto-card">
-                <div className="proyecto-icon"></div>
-                <h3 className="proyecto-nombre">{proyecto.nombre_proyecto}</h3>
-                <p className="proyecto-descripcion">{proyecto.descripcion}</p>
-                <div className="proyecto-footer">
-                  <div className="proyecto-presentador"><span className="presentador-icon"></span><span className="presentador-nombre">{proyecto.presentador}</span></div>
-                </div>
-              </div>
-            ))}
+      {vistaActual === 'halloween' && (
+        <>
+          <div className="proyectos-header">
+            <button className="btn-volver" onClick={() => setVistaActual('principal')}>
+              ← Volver
+            </button>
+            <h1>🎃 Proyectos Halloween - HTML & CSS</h1>
+            <p className="proyectos-subtitle">Proyectos del curso de Octubre</p>
           </div>
-        )}
-      </div>
 
-  {mostrarToast && (<div className={`toast toast-${toastTipo}`}>{toastMensaje}</div>)}
+          <div className="registro-section">
+            <button className="btn-registrar-proyecto" onClick={() => setMostrarFormulario(!mostrarFormulario)}>
+              {mostrarFormulario ? '❌ Cancelar' : '📝 Registrar mi Proyecto'}
+            </button>
+          </div>
+
+          {mostrarFormulario && (
+            <div className="formulario-proyecto-card">
+              <h2 className="formulario-titulo">🎃 Registra tu Proyecto de Halloween</h2>
+              
+              <div className="ideas-sugeridas">
+                <h3 className="ideas-titulo">💡 Ideas de Proyectos Halloween</h3>
+                <div className="ideas-grid">
+                  {ideasHalloween.map((idea, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      className="idea-card"
+                      onClick={() => seleccionarIdea(idea)}
+                      disabled={enviando}
+                    >
+                      <span className="idea-nombre">{idea.nombre}</span>
+                      <span className="idea-desc">{idea.descripcion}</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="ideas-nota">👆 Haz clic en una idea para usarla, o crea la tuya abajo</p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="formulario-proyecto">
+                <div className="form-row">
+                  <div className="form-group full-width">
+                    <label htmlFor="nombre_proyecto">Nombre del Proyecto *</label>
+                    <input type="text" id="nombre_proyecto" name="nombre_proyecto" value={formulario.nombre_proyecto} onChange={handleChange} placeholder="Ej: Página de Halloween Interactiva" disabled={enviando} />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group full-width">
+                    <label htmlFor="descripcion">Descripción *</label>
+                    <textarea id="descripcion" name="descripcion" value={formulario.descripcion} onChange={handleChange} placeholder="Describe tu proyecto (máx. 200 caracteres)" maxLength="200" rows="3" disabled={enviando} />
+                    <span className="char-count">{formulario.descripcion.length}/200</span>
+                  </div>
+                </div>
+
+                <div className="divider"><span>👤 Tus Datos</span></div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="nombre_invitado">Tu Nombre *</label>
+                    <input type="text" id="nombre_invitado" name="nombre_invitado" value={formulario.nombre_invitado} onChange={handleChange} placeholder="Juan Pérez" disabled={enviando} />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="email_invitado">Tu Email * (con el que te registraste al curso)</label>
+                    <input type="email" id="email_invitado" name="email_invitado" value={formulario.email_invitado} onChange={handleChange} placeholder="tu@email.com" disabled={enviando} />
+                  </div>
+                </div>
+
+                <div className="form-actions">
+                  <button type="submit" className="btn-submit-proyecto" disabled={enviando}>{enviando ? '⏳ Enviando...' : '✅ Registrar Proyecto'}</button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          <div className="proyectos-lista-section">
+            <h2 className="seccion-titulo">📋 Proyectos Registrados - Halloween</h2>
+            {cargando ? (
+              <div className="loading"><div className="spinner"></div><p>Cargando proyectos...</p></div>
+            ) : proyectosHalloween.length === 0 ? (
+              <div className="empty-state"><p className="empty-icon">📦</p><p className="empty-message">Aún no hay proyectos</p><p className="empty-submessage">¡Sé el primero!</p></div>
+            ) : (
+              <div className="proyectos-grid">
+                {proyectosHalloween.map((proyecto) => (
+                  <div key={proyecto.id} className="proyecto-card">
+                    <div className="proyecto-icon">🎃</div>
+                    <h3 className="proyecto-nombre">{proyecto.nombre_proyecto}</h3>
+                    <p className="proyecto-descripcion">{proyecto.descripcion}</p>
+                    <div className="proyecto-footer">
+                      <div className="proyecto-presentador"><span className="presentador-icon">👤</span><span className="presentador-nombre">{proyecto.presentador}</span></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      {vistaActual === 'navidad' && (
+        <>
+          <div className="proyectos-header">
+            <button className="btn-volver" onClick={() => setVistaActual('principal')}>
+              ← Volver
+            </button>
+            <h1>🎄 Proyectos Navidad - Figma</h1>
+            <p className="proyectos-subtitle">Proyectos del curso de Diciembre</p>
+          </div>
+
+          <div className="registro-section">
+            <button className="btn-registrar-proyecto" onClick={() => setMostrarFormulario(!mostrarFormulario)}>
+              {mostrarFormulario ? '❌ Cancelar' : '📝 Registrar mi Proyecto'}
+            </button>
+          </div>
+
+          {mostrarFormulario && (
+            <div className="formulario-proyecto-card">
+              <h2 className="formulario-titulo">🎄 Registra tu Proyecto de Navidad</h2>
+              
+              <div className="ideas-sugeridas">
+                <h3 className="ideas-titulo">💡 Ideas de Proyectos Navidad</h3>
+                <div className="ideas-grid">
+                  {ideasNavidad.map((idea, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      className="idea-card"
+                      onClick={() => seleccionarIdea(idea)}
+                      disabled={enviando}
+                    >
+                      <span className="idea-nombre">{idea.nombre}</span>
+                      <span className="idea-desc">{idea.descripcion}</span>
+                    </button>
+                  ))}
+                </div>
+                <p className="ideas-nota">👆 Haz clic en una idea para usarla, o crea la tuya abajo</p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="formulario-proyecto">
+                <div className="form-row">
+                  <div className="form-group full-width">
+                    <label htmlFor="nombre_proyecto">Nombre del Proyecto *</label>
+                    <input type="text" id="nombre_proyecto" name="nombre_proyecto" value={formulario.nombre_proyecto} onChange={handleChange} placeholder="Ej: Diseño Navideño en Figma" disabled={enviando} />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group full-width">
+                    <label htmlFor="descripcion">Descripción *</label>
+                    <textarea id="descripcion" name="descripcion" value={formulario.descripcion} onChange={handleChange} placeholder="Describe tu proyecto (máx. 200 caracteres)" maxLength="200" rows="3" disabled={enviando} />
+                    <span className="char-count">{formulario.descripcion.length}/200</span>
+                  </div>
+                </div>
+
+                <div className="divider"><span>👤 Tus Datos</span></div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="nombre_invitado">Tu Nombre *</label>
+                    <input type="text" id="nombre_invitado" name="nombre_invitado" value={formulario.nombre_invitado} onChange={handleChange} placeholder="Juan Pérez" disabled={enviando} />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="email_invitado">Tu Email * (con el que te registraste al curso)</label>
+                    <input type="email" id="email_invitado" name="email_invitado" value={formulario.email_invitado} onChange={handleChange} placeholder="tu@email.com" disabled={enviando} />
+                  </div>
+                </div>
+
+                <div className="form-actions">
+                  <button type="submit" className="btn-submit-proyecto" disabled={enviando}>{enviando ? '⏳ Enviando...' : '✅ Registrar Proyecto'}</button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          <div className="proyectos-lista-section">
+            <h2 className="seccion-titulo">📋 Proyectos Registrados - Navidad</h2>
+            {cargando ? (
+              <div className="loading"><div className="spinner"></div><p>Cargando proyectos...</p></div>
+            ) : proyectosNavidad.length === 0 ? (
+              <div className="empty-state"><p className="empty-icon">📦</p><p className="empty-message">Aún no hay proyectos</p><p className="empty-submessage">¡Sé el primero!</p></div>
+            ) : (
+              <div className="proyectos-grid">
+                {proyectosNavidad.map((proyecto) => (
+                  <div key={proyecto.id} className="proyecto-card">
+                    <div className="proyecto-icon">🎄</div>
+                    <h3 className="proyecto-nombre">{proyecto.nombre_proyecto}</h3>
+                    <p className="proyecto-descripcion">{proyecto.descripcion}</p>
+                    <div className="proyecto-footer">
+                      <div className="proyecto-presentador"><span className="presentador-icon">👤</span><span className="presentador-nombre">{proyecto.presentador}</span></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      {mostrarToast && (<div className={`toast toast-${toastTipo}`}>{toastMensaje}</div>)}
     </div>
   );
 };
