@@ -711,6 +711,33 @@
   font-size: 1rem;
 }
 
+.btn-ver-figma {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #0acf83; /* Figma green */
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-family: 'Ryker', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.btn-ver-figma:hover {
+  background-color: #00b36e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(10, 207, 131, 0.3);
+}
+
+.dark-mode .btn-ver-figma {
+  background-color: #0acf83;
+  color: #000;
+}
+
 /* Toast Notifications */
 .toast {
   position: fixed;
