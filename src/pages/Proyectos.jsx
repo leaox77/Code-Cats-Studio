@@ -284,7 +284,7 @@ const Proyectos = () => {
 
             <div className="curso-card" onClick={() => setVistaActual('navidad')}>
               <div className="curso-icon">🎄</div>
-              <h3 className="curso-titulo">Navidad - Figma</h3>
+              <h3 className="curso-titulo">Navidad - Curso UX/UI</h3>
               <p className="curso-descripcion">Proyectos del curso de Figma con temática de Navidad (Diciembre 2025)</p>
               <button className="btn-ver-proyectos">Ver Proyectos →</button>
             </div>
