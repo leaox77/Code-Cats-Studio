@@ -65,7 +65,8 @@ const Proyectos = () => {
     nombre_proyecto: '',
     descripcion: '',
     nombre_invitado: '',
-    email_invitado: ''
+    email_invitado: '',
+    link_figma: ''
   });
 
   // Carga de proyectos usando JSONP para evitar CORS
@@ -79,7 +80,7 @@ const Proyectos = () => {
     window[callbackName] = (response) => {
       clearTimeout(timeoutId);
       console.log('📥 Respuesta recibida:', response);
-      
+
       try {
         if (response?.status === 'success') {
           if (categoria === 'halloween') {
@@ -103,10 +104,10 @@ const Proyectos = () => {
 
     const url = `${scriptURL}?action=list&categoria=${categoria}&callback=${callbackName}`;
     console.log('📤 Cargando proyectos desde:', url);
-    
+
     script.src = url;
     script.async = true;
-    
+
     script.onerror = (err) => {
       clearTimeout(timeoutId);
       console.error('❌ Error de red al cargar script:', err);
@@ -192,7 +193,8 @@ const Proyectos = () => {
       nombre_invitado: formulario.nombre_invitado,
       email_invitado: formulario.email_invitado,
       fecha: new Date().toLocaleString('es-BO'),
-      categoria: categoria
+      categoria: categoria,
+      link_figma: formulario.link_figma
     };
 
     const callbackName = 'callback_' + Date.now() + '_' + Math.random().toString(36).slice(2);
@@ -202,7 +204,7 @@ const Proyectos = () => {
     window[callbackName] = (response) => {
       clearTimeout(timeoutId);
       console.log('📥 Respuesta registro:', response);
-      
+
       try {
         if (response?.status === "success") {
           mostrarToastMensaje('🎉 Proyecto registrado!', 'success');
@@ -227,10 +229,10 @@ const Proyectos = () => {
     const url = `${scriptURL}?action=register&data=${payload}&callback=${callbackName}`;
     console.log('📤 Registrando proyecto:', datosProyecto);
     console.log('📤 URL:', url);
-    
+
     script.src = url;
     script.async = true;
-    
+
     script.onerror = (err) => {
       clearTimeout(timeoutId);
       console.error('❌ Error de red al registrar:', err);
@@ -253,7 +255,7 @@ const Proyectos = () => {
   };
 
   const limpiarFormulario = () => {
-    setFormulario({ nombre_proyecto: '', descripcion: '', nombre_invitado: '', email_invitado: '' });
+    setFormulario({ nombre_proyecto: '', descripcion: '', nombre_invitado: '', email_invitado: '', link_figma: '' });
   };
 
   const mostrarToastMensaje = (mensaje, tipo = 'success') => {
@@ -300,70 +302,6 @@ const Proyectos = () => {
             <p className="proyectos-subtitle">Proyectos del curso de Octubre</p>
           </div>
 
-          <div className="registro-section">
-            <button className="btn-registrar-proyecto" onClick={() => setMostrarFormulario(!mostrarFormulario)}>
-              {mostrarFormulario ? '❌ Cancelar' : '📝 Registrar mi Proyecto'}
-            </button>
-          </div>
-
-          {mostrarFormulario && (
-            <div className="formulario-proyecto-card">
-              <h2 className="formulario-titulo">🎃 Registra tu Proyecto de Halloween</h2>
-              
-              <div className="ideas-sugeridas">
-                <h3 className="ideas-titulo">💡 Ideas de Proyectos Halloween</h3>
-                <div className="ideas-grid">
-                  {ideasHalloween.map((idea, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      className="idea-card"
-                      onClick={() => seleccionarIdea(idea)}
-                      disabled={enviando}
-                    >
-                      <span className="idea-nombre">{idea.nombre}</span>
-                      <span className="idea-desc">{idea.descripcion}</span>
-                    </button>
-                  ))}
-                </div>
-                <p className="ideas-nota">👆 Haz clic en una idea para usarla, o crea la tuya abajo</p>
-              </div>
-
-              <form onSubmit={handleSubmit} className="formulario-proyecto">
-                <div className="form-row">
-                  <div className="form-group full-width">
-                    <label htmlFor="nombre_proyecto">Nombre del Proyecto *</label>
-                    <input type="text" id="nombre_proyecto" name="nombre_proyecto" value={formulario.nombre_proyecto} onChange={handleChange} placeholder="Ej: Página de Halloween Interactiva" disabled={enviando} />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group full-width">
-                    <label htmlFor="descripcion">Descripción *</label>
-                    <textarea id="descripcion" name="descripcion" value={formulario.descripcion} onChange={handleChange} placeholder="Describe tu proyecto (máx. 200 caracteres)" maxLength="200" rows="3" disabled={enviando} />
-                    <span className="char-count">{formulario.descripcion.length}/200</span>
-                  </div>
-                </div>
-
-                <div className="divider"><span>👤 Tus Datos</span></div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="nombre_invitado">Tu Nombre *</label>
-                    <input type="text" id="nombre_invitado" name="nombre_invitado" value={formulario.nombre_invitado} onChange={handleChange} placeholder="Juan Pérez" disabled={enviando} />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="email_invitado">Tu Email * (con el que te registraste al curso)</label>
-                    <input type="email" id="email_invitado" name="email_invitado" value={formulario.email_invitado} onChange={handleChange} placeholder="tu@email.com" disabled={enviando} />
-                  </div>
-                </div>
-
-                <div className="form-actions">
-                  <button type="submit" className="btn-submit-proyecto" disabled={enviando}>{enviando ? '⏳ Enviando...' : '✅ Registrar Proyecto'}</button>
-                </div>
-              </form>
-            </div>
-          )}
-
           <div className="proyectos-lista-section">
             <h2 className="seccion-titulo">📋 Proyectos Registrados - Halloween</h2>
             {cargando ? (
@@ -407,7 +345,7 @@ const Proyectos = () => {
           {mostrarFormulario && (
             <div className="formulario-proyecto-card">
               <h2 className="formulario-titulo">🎄 Registra tu Proyecto de Navidad</h2>
-              
+
               <div className="ideas-sugeridas">
                 <h3 className="ideas-titulo">💡 Ideas de Proyectos Navidad</h3>
                 <div className="ideas-grid">
@@ -440,6 +378,13 @@ const Proyectos = () => {
                     <label htmlFor="descripcion">Descripción *</label>
                     <textarea id="descripcion" name="descripcion" value={formulario.descripcion} onChange={handleChange} placeholder="Describe tu proyecto (máx. 200 caracteres)" maxLength="200" rows="3" disabled={enviando} />
                     <span className="char-count">{formulario.descripcion.length}/200</span>
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group full-width">
+                    <label htmlFor="link_figma">Link de Figma (Opcional)</label>
+                    <input type="url" id="link_figma" name="link_figma" value={formulario.link_figma} onChange={handleChange} placeholder="https://www.figma.com/file/..." disabled={enviando} />
                   </div>
                 </div>
 
@@ -477,6 +422,11 @@ const Proyectos = () => {
                     <p className="proyecto-descripcion">{proyecto.descripcion}</p>
                     <div className="proyecto-footer">
                       <div className="proyecto-presentador"><span className="presentador-icon">👤</span><span className="presentador-nombre">{proyecto.presentador}</span></div>
+                      {proyecto.link_figma && (
+                        <a href={proyecto.link_figma} target="_blank" rel="noopener noreferrer" className="btn-ver-figma">
+                          🎨 Ver en Figma
+                        </a>
+                      )}
                     </div>
                   </div>
                 ))}
