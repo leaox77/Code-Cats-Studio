@@ -332,7 +332,7 @@ const Proyectos = () => {
             <button className="btn-volver" onClick={() => setVistaActual('principal')}>
               ← Volver
             </button>
-            <h1>🎄 Proyectos Navidad - Figma</h1>
+            <h1>🎄 Proyectos Navidad - Curso UX/UI</h1>
             <p className="proyectos-subtitle">Proyectos del curso de Diciembre</p>
           </div>
 
